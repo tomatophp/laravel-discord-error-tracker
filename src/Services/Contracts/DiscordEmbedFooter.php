@@ -39,7 +39,7 @@ class DiscordEmbedFooter
     public function toArray(): array
     {
         return [
-            'text' => $this->text.($this->timestamp ? (' - '.$this->timestamp) : null),
+            'text' => $this->text . ($this->timestamp ? (' - ' . $this->timestamp) : null),
             'icon_url' => $this->icon_url,
         ];
     }
