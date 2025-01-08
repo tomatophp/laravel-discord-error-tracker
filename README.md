@@ -53,7 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
 if you are using Laravel 10, use this code, at `app\Exceptions\Handler.php`
 
-````php
+```php
 <?php
 
 namespace App\Exceptions;
@@ -85,6 +85,7 @@ class Handler extends ExceptionHandler
         });
     }
 }
+
 ```
 
 this way will log all errors on your app, if you like to log selected error you can use this method direct
@@ -104,7 +105,7 @@ you can publish config file by use this command
 
 ```bash
 php artisan vendor:publish --tag="laravel-discord-error-tracker-config"
-````
+```
 
 ## Changelog
 
