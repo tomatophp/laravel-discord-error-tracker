@@ -1,19 +1,5 @@
 providers:
-  - BladeUI\Icons\BladeIconsServiceProvider
-  - BladeUI\Heroicons\BladeHeroiconsServiceProvider
-  - Filament\Actions\ActionsServiceProvider
-  - Filament\FilamentServiceProvider
-  - Filament\Forms\FormsServiceProvider
-  - Filament\Infolists\InfolistsServiceProvider
-  - Filament\Notifications\NotificationsServiceProvider
-  - Filament\Support\SupportServiceProvider
-  - Filament\Tables\TablesServiceProvider
-  - Filament\Widgets\WidgetsServiceProvider
-  - RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider
-  - TomatoPHP\FilamentUsers\FilamentUsersServiceProvider
-  - TomatoPHP\FilamentUsers\Tests\AdminPanelProvider
-seeders:
-  - TomatoPHP\FilamentUsers\Tests\Database\Seeders\DatabaseSeeder
+  - TomatoPHP\LaravelDiscordErrorTracker\LaravelDiscordErrorTrackerServiceProvider
 workbench:
   welcome: true
   install: true

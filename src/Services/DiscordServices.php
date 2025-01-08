@@ -2,10 +2,11 @@
 
 namespace TomatoPHP\LaravelDiscordErrorTracker\Services;
 
+use Illuminate\Foundation\Configuration\Exceptions;
 use Throwable;
 use TomatoPHP\FilamentDiscordDriver\Jobs\NotifyDiscordJob;
 use TomatoPHP\LaravelDiscordErrorTracker\Clients\Discord;
-use Illuminate\Foundation\Configuration\Exceptions;
+
 class DiscordServices
 {
     private ?string $webhook;
@@ -62,10 +63,6 @@ class DiscordServices
         Discord::send($params);
     }
 
-    /**
-     * @param Exceptions $exceptions
-     * @return void
-     */
     public function handler(Exceptions $exceptions): void
     {
         $exceptions->reportable(function (Throwable $e) {
