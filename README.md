@@ -35,7 +35,7 @@ if you are using Laravel 11 or above use this code, at `bootstrap/app.php`
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use TomatoPHP\LaravelDiscordErrorTracker\Facades\LaravelDiscordErrorTracker;
+use TomatoPHP\LaravelDiscordErrorTracker\Services\DiscordServices;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -47,7 +47,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        LaravelDiscordErrorTracker::handler($exceptions);
+        DiscordServices::handler($exceptions);
     })->create();
 ```
 
@@ -58,7 +58,7 @@ if you are using Laravel 10, use this code, at `app\Exceptions\Handler.php`
 
 namespace App\Exceptions;
 
-use TomatoPHP\LaravelDiscordErrorTracker\Facades\LaravelDiscordErrorTracker;
+use TomatoPHP\LaravelDiscordErrorTracker\Services\DiscordServices;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -81,7 +81,7 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $exception) {
-            LaravelDiscordErrorTracker::handler($exception);
+            DiscordServices::handler($exception);
         });
     }
 }
@@ -92,10 +92,10 @@ this way will log all errors on your app, if you like to log selected error you 
 ```php
 <?php
 
-use TomatoPHP\LaravelDiscordErrorTracker\Facades\LaravelDiscordErrorTracker;
+use TomatoPHP\LaravelDiscordErrorTracker\Services\DiscordServices;
 
 $exception = new \Exception('Test Exception');
-LaravelDiscordErrorTracker::handler($exception);
+DiscordServices::handler($exception);
 ```
 
 ## Publish Assets

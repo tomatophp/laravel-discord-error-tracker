@@ -56,19 +56,19 @@ class DiscordServices
         $this->file = $e->getFile();
         $this->line = $e->getLine();
         $this->time = \Carbon\Carbon::now()->toDateTimeString();
-        $this->trace = '```' . str($e->getTraceAsString())->limit($this->traceLimit) . '```';
+        $this->trace = '```'.str($e->getTraceAsString())->limit($this->traceLimit).'```';
         $this->url = url()->current();
 
         $this->send();
     }
 
-    public function handler(Exceptions | Throwable $exceptions): bool
+    public static function handler(Exceptions|Throwable $exceptions): bool
     {
         if (config('laravel-discord-error-tracker.error-webhook-active')) {
             if ($exceptions instanceof Exceptions) {
                 $exceptions->reportable(function (Throwable $e) {
                     try {
-                        $this->exception($e);
+                        (new self)->exception($e);
 
                         return true;
                     } catch (\Exception $exception) {
@@ -77,7 +77,7 @@ class DiscordServices
                 });
             } else {
                 try {
-                    $this->exception($exceptions);
+                    (new self)->exception($exceptions);
 
                     return true;
                 } catch (\Exception $exception) {
