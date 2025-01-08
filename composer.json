@@ -52,7 +52,7 @@
     },
     "require": {
         "php": "^8.1|^8.2",
-        "laravel/framework": "^v10.0",
+        "laravel/framework": "*",
         "guzzlehttp/guzzle": "*"
     },
     "require-dev": {
