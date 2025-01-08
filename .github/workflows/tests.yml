@@ -6,7 +6,7 @@ on:
     branches:
       - master
     paths:
-      - '**.php'
+      - "**.php"
   pull_request:
     types:
       - opened
@@ -14,11 +14,11 @@ on:
     branches:
       - master
     paths:
-      - '**.php'
-      - '.github/workflows/tests.yml'
-      - 'phpunit.xml.dist'
-      - 'composer.json'
-      - 'composer.lock'
+      - "**.php"
+      - ".github/workflows/tests.yml"
+      - "phpunit.xml.dist"
+      - "composer.json"
+      - "composer.lock"
 
 jobs:
   test:

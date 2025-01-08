@@ -14,4 +14,11 @@ return [
      * ---------------------------------------
      */
     'error-webhook' => env('DISCORD_ERROR_WEBHOOK'),
+
+    /**
+     * ---------------------------------------
+     * Allow Discord Errors Logger Webhook
+     * ---------------------------------------
+     */
+    'everyone' => env('DISCORD_ERROR_EVERYONE', true),
 ];

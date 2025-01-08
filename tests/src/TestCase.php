@@ -13,15 +13,14 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageProviders($app): array
     {
         return [
-            LaravelDiscordErrorTrackerServiceProvider::class
+            LaravelDiscordErrorTrackerServiceProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app): void
     {
-        $app['config']->set('view.paths', [
-            ...$app['config']->get('view.paths'),
-            __DIR__ . '/../resources/views',
-        ]);
+        $app['config']->set('queue.default', 'sync');
+        $app['config']->set('laravel-discord-error-tracker.error-webhook-active', true);
+        $app['config']->set('laravel-discord-error-tracker.error-webhook', 'https://discord.com/api/webhooks/1263430024275562577/xEPrYTn6IsDRvfyFpoAIK-Avmdr56BLXw5RxHxDa4E7FJ8p_4bzESh0nep6XSWk9z1V5');
     }
 }

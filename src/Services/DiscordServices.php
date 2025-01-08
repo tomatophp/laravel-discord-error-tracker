@@ -4,85 +4,88 @@ namespace TomatoPHP\LaravelDiscordErrorTracker\Services;
 
 use Illuminate\Foundation\Configuration\Exceptions;
 use Throwable;
-use TomatoPHP\FilamentDiscordDriver\Jobs\NotifyDiscordJob;
-use TomatoPHP\LaravelDiscordErrorTracker\Clients\Discord;
+use TomatoPHP\LaravelDiscordErrorTracker\Jobs\NotifyDiscordJob;
+use TomatoPHP\LaravelDiscordErrorTracker\Services\Contracts\DiscordEmbedFooter;
+use TomatoPHP\LaravelDiscordErrorTracker\Services\Contracts\DiscordEmbeds;
+use TomatoPHP\LaravelDiscordErrorTracker\Services\Contracts\DiscordField;
+use TomatoPHP\LaravelDiscordErrorTracker\Services\Contracts\DiscordMessage;
 
 class DiscordServices
 {
-    private ?string $webhook;
-
     private ?string $title;
 
-    private ?string $message;
+    private ?string $file;
+
+    private ?string $line;
+
+    private ?string $trace;
+
+    private ?string $time;
 
     private ?string $url;
 
-    private ?string $image;
+    private ?int $traceLimit = 4000;
 
     private function send(): void
     {
-        $embeds = [];
-        if ($this->message) {
-            $embeds = [
-                'title' => $this->title,
-                'description' => $this->message,
-            ];
-        }
-
-        if ($this->url && ! $this->message) {
-            $embeds = [
-                'title' => $this->title,
-            ];
-        }
-
-        if ($this->url) {
-            $embeds['url'] = $this->url;
-        }
-
-        if ($this->image) {
-            $embeds['image'] = [
-                'url' => $this->image,
-            ];
-        }
-
-        if (count($embeds) > 0) {
-            $params = [
-                'content' => '@everyone',
-                'embeds' => [
-                    $embeds,
-                ],
-            ];
-        } else {
-            $params = [
-                'content' => $this->title,
-            ];
-        }
+        $params = DiscordMessage::make()
+            ->embeds([
+                DiscordEmbeds::make($this->title)
+                    ->color('#ED4245')
+                    ->message($this->trace)
+                    ->fields([
+                        DiscordField::make('File', $this->file),
+                        DiscordField::make('Line', $this->line),
+                        DiscordField::make('URL', $this->url),
+                    ])
+                    ->footer(
+                        DiscordEmbedFooter::make('Laravel Discord Error Tracker')
+                            ->icon_url('https://tomatophp.com/tomato.png')
+                            ->timestamp($this->time)
+                    )
+                    ->url($this->url),
+            ])
+            ->toArray();
 
         dispatch(new NotifyDiscordJob($params));
-
-        Discord::send($params);
     }
 
-    public function handler(Exceptions $exceptions): void
+    private function exception(Throwable $e): void
     {
-        $exceptions->reportable(function (Throwable $e) {
-            if (config('laravel-discord-error-tracker.error-webhook-active')) {
+        $this->title = $e->getMessage();
+        $this->file = $e->getFile();
+        $this->line = $e->getLine();
+        $this->time = \Carbon\Carbon::now()->toDateTimeString();
+        $this->trace = '```'.str($e->getTraceAsString())->limit($this->traceLimit).'```';
+        $this->url = url()->current();
+
+        $this->send();
+    }
+
+    public function handler(Exceptions|Throwable $exceptions): bool
+    {
+        if (config('laravel-discord-error-tracker.error-webhook-active')) {
+            if ($exceptions instanceof Exceptions) {
+                $exceptions->reportable(function (Throwable $e) {
+                    try {
+                        $this->exception($e);
+
+                        return true;
+                    } catch (\Exception $exception) {
+                        return false;
+                    }
+                });
+            } else {
                 try {
-                    dispatch(new NotifyDiscordJob([
-                        'webhook' => config('filament-discord-driver.error-webhook'),
-                        'title' => $e->getMessage(),
-                        'message' => collect([
-                            'File: ' . $e->getFile(),
-                            'Line: ' . $e->getLine(),
-                            'Time: ' . \Carbon\Carbon::now()->toDateTimeString(),
-                            'Trace: ```' . str($e->getTraceAsString())->limit(2500) . '```',
-                        ])->implode("\n"),
-                        'url' => url()->current(),
-                    ]));
+                    $this->exception($exceptions);
+
+                    return true;
                 } catch (\Exception $exception) {
-                    // do nothing
+                    return false;
                 }
             }
-        });
+        } else {
+            return false;
+        }
     }
 }
