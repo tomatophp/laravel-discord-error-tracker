@@ -121,3 +121,31 @@ Please see [SECURITY](SECURITY.md) for more information about security.
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+## Testing
+
+if you like to run `PEST` testing just use this command
+
+```bash
+composer test
+```
+
+## Code Style
+
+if you like to fix the code style just use this command
+
+```bash
+composer format
+```
+
+## PHPStan
+
+if you like to check the code by `PHPStan` just use this command
+
+```bash
+composer analyse
+```
+
+## Other Filament Packages
+
+Checkout our [Awesome TomatoPHP](https://github.com/tomatophp/awesome)
