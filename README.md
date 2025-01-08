@@ -1,4 +1,4 @@
-![Screenshot](https://raw.githubusercontent.com/tomatophp/laravel-discord-error-tracker/master/art/screenshot.jpg)
+![Screenshot](https://raw.githubusercontent.com/tomatophp/laravel-discord-error-tracker/master/arts/screenshot.jpg)
 
 # Laravel Discord Error Tracker
 
