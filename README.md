@@ -2,6 +2,9 @@
 
 # Laravel Discord Error Tracker
 
+[![Dependabot Updates](https://github.com/tomatophp/laravel-discord-error-tracker/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/tomatophp/laravel-discord-error-tracker/actions/workflows/dependabot/dependabot-updates)
+[![PHP Code Styling](https://github.com/tomatophp/laravel-discord-error-tracker/actions/workflows/fix-php-code-styling.yml/badge.svg)](https://github.com/tomatophp/laravel-discord-error-tracker/actions/workflows/fix-php-code-styling.yml)
+[![Tests](https://github.com/tomatophp/laravel-discord-error-tracker/actions/workflows/tests.yml/badge.svg)](https://github.com/tomatophp/laravel-discord-error-tracker/actions/workflows/tests.yml)
 [![Latest Stable Version](https://poser.pugx.org/tomatophp/laravel-discord-error-tracker/version.svg)](https://packagist.org/packages/tomatophp/laravel-discord-error-tracker)
 [![License](https://poser.pugx.org/tomatophp/laravel-discord-error-tracker/license.svg)](https://packagist.org/packages/tomatophp/laravel-discord-error-tracker)
 [![Downloads](https://poser.pugx.org/tomatophp/laravel-discord-error-tracker/d/total.svg)](https://packagist.org/packages/tomatophp/laravel-discord-error-tracker)
