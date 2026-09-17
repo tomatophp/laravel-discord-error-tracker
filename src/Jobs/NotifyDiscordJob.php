@@ -6,7 +6,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use TomatoPHP\LaravelDiscordErrorTracker\Clients\Discord;
 
 class NotifyDiscordJob implements ShouldQueue
@@ -14,22 +13,27 @@ class NotifyDiscordJob implements ShouldQueue
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
-    use SerializesModels;
 
     /**
-     * Create a new notification instance.
-     *
-     * @return void
+     * The number of times the job may be attempted.
+     */
+    public int $tries = 3;
+
+    /**
+     * The number of seconds to wait before retrying the job.
+     */
+    public int $backoff = 10;
+
+    /**
+     * @param  array<string, mixed>  $params
      */
     public function __construct(
-        public array $params
+        public array $params,
+        public ?string $webhook = null,
     ) {}
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
-        Discord::send($this->params);
+        Discord::send($this->params, $this->webhook);
     }
 }

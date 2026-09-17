@@ -2,13 +2,12 @@
 
 namespace TomatoPHP\LaravelDiscordErrorTracker\Tests;
 
-use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use TomatoPHP\LaravelDiscordErrorTracker\LaravelDiscordErrorTrackerServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
-    use WithWorkbench;
+    public const WEBHOOK = 'https://discord.test/api/webhooks/123/token';
 
     protected function getPackageProviders($app): array
     {
@@ -17,10 +16,10 @@ abstract class TestCase extends BaseTestCase
         ];
     }
 
-    public function getEnvironmentSetUp($app): void
+    protected function defineEnvironment($app): void
     {
         $app['config']->set('queue.default', 'sync');
         $app['config']->set('laravel-discord-error-tracker.error-webhook-active', true);
-        $app['config']->set('laravel-discord-error-tracker.error-webhook', 'https://discord.com/api/webhooks/1263430024275562577/xEPrYTn6IsDRvfyFpoAIK-Avmdr56BLXw5RxHxDa4E7FJ8p_4bzESh0nep6XSWk9z1V5');
+        $app['config']->set('laravel-discord-error-tracker.error-webhook', self::WEBHOOK);
     }
 }

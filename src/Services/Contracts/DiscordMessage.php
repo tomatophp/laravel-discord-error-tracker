@@ -6,6 +6,9 @@ class DiscordMessage
 {
     public ?string $content = null;
 
+    /**
+     * @var array<int, array<string, mixed>>
+     */
     public array $embeds = [];
 
     public static function make(?string $content = null): self
@@ -20,6 +23,11 @@ class DiscordMessage
         return $this;
     }
 
+    /**
+     * Discord accepts at most 10 embeds per message; extra embeds are dropped.
+     *
+     * @param  array<int, mixed>  $embeds
+     */
     public function embeds(array $embeds): self
     {
         $getEmbeds = [];
@@ -28,15 +36,18 @@ class DiscordMessage
                 $getEmbeds[] = $embed->toArray();
             }
         }
-        $this->embeds = $getEmbeds;
+        $this->embeds = array_slice($getEmbeds, 0, DiscordLimits::EMBEDS);
 
         return $this;
     }
 
+    /**
+     * @return array{content: string|null, embeds: array<int, array<string, mixed>>}
+     */
     public function toArray(): array
     {
         return [
-            'content' => $this->content,
+            'content' => filled($this->content) ? DiscordLimits::truncate($this->content, DiscordLimits::CONTENT) : null,
             'embeds' => array_values($this->embeds),
         ];
     }

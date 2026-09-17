@@ -4,7 +4,7 @@ namespace TomatoPHP\LaravelDiscordErrorTracker\Services\Contracts;
 
 class DiscordEmbedFooter
 {
-    public string $text;
+    public string $text = '';
 
     public ?string $timestamp = null;
 
@@ -36,11 +36,19 @@ class DiscordEmbedFooter
         return $this;
     }
 
+    /**
+     * @return array{text: string, icon_url?: string}
+     */
     public function toArray(): array
     {
-        return [
-            'text' => $this->text . ($this->timestamp ? (' - ' . $this->timestamp) : null),
-            'icon_url' => $this->icon_url,
+        $data = [
+            'text' => DiscordLimits::truncate($this->text . ($this->timestamp ? (' - ' . $this->timestamp) : ''), DiscordLimits::FOOTER_TEXT),
         ];
+
+        if ($this->icon_url) {
+            $data['icon_url'] = $this->icon_url;
+        }
+
+        return $data;
     }
 }

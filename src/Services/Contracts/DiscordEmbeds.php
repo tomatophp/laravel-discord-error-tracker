@@ -4,9 +4,12 @@ namespace TomatoPHP\LaravelDiscordErrorTracker\Services\Contracts;
 
 class DiscordEmbeds
 {
-    public string $title;
+    public string $title = '';
 
-    public ?array $fields = [];
+    /**
+     * @var array<int, array{name: string, value: string, inline: bool}>
+     */
+    public array $fields = [];
 
     public ?string $message = null;
 
@@ -77,6 +80,11 @@ class DiscordEmbeds
         return $this;
     }
 
+    /**
+     * Discord accepts at most 25 fields per embed; extra fields are dropped.
+     *
+     * @param  array<int, mixed>  $fields
+     */
     public function fields(array $fields): self
     {
         $getFields = [];
@@ -85,22 +93,21 @@ class DiscordEmbeds
                 $getFields[] = $field->toArray();
             }
         }
-        $this->fields = $getFields;
+        $this->fields = array_slice($getFields, 0, DiscordLimits::FIELDS);
 
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         $data = [
-            'title' => $this->title,
+            'title' => DiscordLimits::truncate(filled($this->title) ? $this->title : 'Error', DiscordLimits::TITLE),
         ];
 
-        if ($this->message) {
-            $data['description'] = $this->message;
-        }
-
-        if ($this->url) {
+        if ($this->url && filter_var($this->url, FILTER_VALIDATE_URL)) {
             $data['url'] = $this->url;
         }
 
@@ -115,13 +122,36 @@ class DiscordEmbeds
         }
 
         if ($this->color) {
-            $data['color'] = hexdec($this->color);
+            $data['color'] = (int) hexdec(ltrim($this->color, '#'));
         }
 
         if ($this->footer) {
             $data['footer'] = $this->footer->toArray();
         }
 
+        if ($this->message) {
+            $data['description'] = DiscordLimits::truncateKeepingCodeBlock(
+                $this->message,
+                max(0, min(DiscordLimits::DESCRIPTION, DiscordLimits::EMBED_TOTAL - $this->countedLength($data)))
+            );
+        }
+
         return $data;
+    }
+
+    /**
+     * Characters Discord counts toward the 6000 characters embed total.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    private function countedLength(array $data): int
+    {
+        $length = mb_strlen($data['title']) + mb_strlen($data['footer']['text'] ?? '');
+
+        foreach ($data['fields'] ?? [] as $field) {
+            $length += mb_strlen($field['name']) + mb_strlen($field['value']);
+        }
+
+        return $length;
     }
 }
